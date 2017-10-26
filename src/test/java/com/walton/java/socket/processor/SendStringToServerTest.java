@@ -17,7 +17,12 @@ public class SendStringToServerTest {
         boolean expected = true;
         Assert.assertEquals(expected,actual);
 
-        stubServerSocket.close();
+        actual = sendStringToServer.execute("test");
+        expected = true;
+        Assert.assertEquals(expected,actual);
+
+        sendStringToServer.close();
+
         actual = sendStringToServer.execute("test");
         expected = false;
         Assert.assertEquals(expected,actual);
