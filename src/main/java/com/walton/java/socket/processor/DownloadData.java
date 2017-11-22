@@ -35,16 +35,14 @@ public class DownloadData implements Mission<URL>{
         try {
             OutputStream outputStream = socket.getOutputStream();
             new SendHttpGetRequest(url).execute(outputStream);
-            GetHttpResponseData getHttpResponseData = new GetHttpResponseData();
-            writeOnFile(getHttpResponseData.execute(socket),file);
+            OutputStream fileOutputStream = new FileOutputStream(file);
+            GetHttpResponseData getHttpResponseData = new GetHttpResponseData(fileOutputStream);
+            getHttpResponseData.execute(socket);
             outputStream.close();
             socket.close();
         } catch(IOException e){
             e.printStackTrace();
         }
         return null;
-    }
-    private void writeOnFile(File from,File target){
-        from.renameTo(target);
     }
 }

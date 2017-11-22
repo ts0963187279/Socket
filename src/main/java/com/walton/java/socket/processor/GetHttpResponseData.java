@@ -21,12 +21,16 @@ import java.io.*;
 import java.net.Socket;
 
 public class GetHttpResponseData implements Mission<Socket> {
+    private OutputStream outputStream;
+    public GetHttpResponseData(OutputStream outputStream){
+        this.outputStream = outputStream;
+    }
     @Override
-    public File execute(Socket socket) throws IOException {
+    public Void execute(Socket socket) throws IOException {
         int count, offset, len = 0;
         DataInputStream in = new DataInputStream(socket.getInputStream());
-        File file = new File("outputTemp");
-        OutputStream out = new FileOutputStream(file);
+//        File file = new File("outputTemp");
+//        OutputStream out = new FileOutputStream(file);
         byte[] buffer = new byte[1024];
         boolean eohFound = false;
         int length = 0;
@@ -45,15 +49,16 @@ public class GetHttpResponseData implements Mission<Socket> {
             }
             if(eohFound){
                 len += count;
-                out.write(buffer, offset, count);
-                out.flush();
+                outputStream.write(buffer, offset, count);
+                outputStream.flush();
+                System.out.println(len+"/"+length);
                 if (len == length)
                     break;
             }
         }
-        out.close();
+        outputStream.close();
         in.close();
-        return file;
+        return null;
     }
     private class GetHttpContentLength implements Mission<String> {
         @Override
